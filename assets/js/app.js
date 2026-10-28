@@ -2,6 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'csorg_quiz_v2';
+  const VIEW_STORAGE_KEY = 'csorg_current_view_v1';
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const pad2 = (n) => String(n).padStart(2, '0');
@@ -251,6 +252,9 @@
 
   function setView(name) {
     currentView = name;
+    try {
+      sessionStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({ view: name, chapter: name === 'mcq' ? mcqChapter : currentChapter }));
+    } catch (_) { /* Navigation still works when storage is unavailable. */ }
     document.body.classList.toggle('choosing-mode', name === 'mode');
     document.body.classList.toggle('viewing-multiple', name === 'multiple' || name === 'mcq');
     closeAnswerPicker(false);
@@ -1425,4 +1429,30 @@
   updateTopStats();
   syncSubmitDock();
   document.title = 'CS:ORG — แล็บเติมคำ โครงสร้างระบบคอมพิวเตอร์';
+  let savedView = null;
+  try { savedView = JSON.parse(sessionStorage.getItem(VIEW_STORAGE_KEY)); } catch (_) { /* Start at mode selection. */ }
+  if (savedView && typeof savedView === 'object') {
+    const chapter = Number(savedView.chapter);
+    switch (savedView.view) {
+      case 'home':
+        showHome();
+        break;
+      case 'quiz':
+        if (chapterById(chapter)) openChapter(chapter);
+        break;
+      case 'summary':
+        if (chapterById(chapter)) showSummary(chapter);
+        break;
+      case 'multiple':
+        handleAction('select-multiple');
+        break;
+      case 'mcq':
+        if (Object.prototype.hasOwnProperty.call(MCQ_BANKS, chapter)) {
+          handleAction('open-mcq', { dataset: { mcqChapter: chapter } });
+        }
+        break;
+      default:
+        break;
+    }
+  }
 })();
