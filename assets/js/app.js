@@ -228,7 +228,12 @@
       boardTotal: TOTAL,
       heroQuestions: TOTAL,
       heroHints: TOTAL,
-      footerTotal: TOTAL
+      footerTotal: TOTAL,
+      multipleTotal: TOTAL,
+      multipleMetaQuestions: MCQ_TOTAL,
+      multipleMetaObjectives: TOTAL,
+      multipleFooterTotal: MCQ_TOTAL,
+      multipleFooterObjectives: TOTAL
     };
     Object.entries(fields).forEach(([id, value]) => {
       const element = document.getElementById(id);
@@ -328,21 +333,71 @@
 
   /* ---------- Home ---------- */
   function renderMultipleHome() {
-    const correct = Object.entries(MCQ_BANKS).reduce((sum, [id, questions]) => sum + questions.filter((q, i) => mcqStates[id].answers[i] === q.answer).length, 0);
-    $('#multipleCorrect').textContent = correct;
+    let masteredObjectives = 0;
+    let totalAnswered = 0;
+    let totalCorrect = 0;
+
+    const lanesEl = $('#multipleLanes');
+    if (lanesEl) lanesEl.innerHTML = CHAPTERS.map((chapter) => {
+      const questions = MCQ_BANKS[chapter.id] || [];
+      const available = Boolean(questions.length);
+      const chapterState = mcqStates[chapter.id] || { answers: {}, submitted: false };
+      const numObjectives = chapter.questions.length;
+
+      const objMap = new Map();
+      questions.forEach((q, i) => {
+        if (!objMap.has(q.obj)) objMap.set(q.obj, []);
+        objMap.get(q.obj).push({ q, i, answer: chapterState.answers[i] });
+      });
+
+      let chapterMastered = 0;
+      const ticks = available ? chapter.questions.map((_, objIdx) => {
+        const objNum = objIdx + 1;
+        const objItems = objMap.get(objNum) || [];
+        const answered = objItems.filter((item) => item.answer !== undefined);
+        if (!answered.length) {
+          return '<span class="tick"></span>';
+        }
+        const hasWrong = answered.some((item) => item.answer !== item.q.answer);
+        if (hasWrong) {
+          return '<span class="tick is-wrong"></span>';
+        }
+        chapterMastered += 1;
+        return '<span class="tick is-correct"></span>';
+      }).join('') : '<span class="lane-pending">กำลังเตรียมข้อสอบ</span>';
+
+      const chapterAnswered = Object.keys(chapterState.answers).length;
+      const chapterCorrect = questions.filter((q, i) => chapterState.answers[i] === q.answer).length;
+
+      masteredObjectives += chapterMastered;
+      totalAnswered += chapterAnswered;
+      totalCorrect += chapterCorrect;
+
+      const ariaLabel = available
+        ? `บทที่ ${chapter.id} ${escapeAttr(chapter.title)} ผ่าน ${chapterMastered} จาก ${numObjectives} วัตถุประสงค์ (ตอบแล้ว ${chapterAnswered}/${questions.length} ข้อ)`
+        : `บทที่ ${chapter.id} ${escapeAttr(chapter.title)} กำลังเตรียมข้อสอบ`;
+
+      return `<button class="lane" type="button" ${available ? `data-action="open-mcq" data-mcq-chapter="${chapter.id}"` : 'disabled'} aria-label="${ariaLabel}"><span class="lane-label"><span class="lane-no">${pad2(chapter.id)}</span><span class="lane-name">${escapeHtml(chapter.short)}</span></span><span class="lane-ticks" aria-hidden="true">${ticks}</span></button>`;
+    }).join('');
+
+    const multipleCorrectEl = $('#multipleCorrect');
+    if (multipleCorrectEl) multipleCorrectEl.textContent = String(masteredObjectives);
+    const multipleTotalEl = $('#multipleTotal');
+    if (multipleTotalEl) multipleTotalEl.textContent = String(TOTAL);
+
+    const boardSub = $('#multipleBoardSub') || $('#multipleBoardTitle span');
+    if (boardSub) {
+      boardSub.textContent = totalAnswered > 0
+        ? `ตอบแล้ว ${totalAnswered}/${MCQ_TOTAL} ข้อ (ถูก ${totalCorrect}) · ผ่าน ${masteredObjectives}/${TOTAL} วัตถุประสงค์`
+        : `${TOTAL} วัตถุประสงค์ · คลัง ${MCQ_TOTAL} ข้อทั้ง 8 บท`;
+    }
+
     const nextId = Number(Object.keys(MCQ_BANKS).find((id) => !mcqStates[id].submitted) || 1);
     $('#multipleContinue').dataset.mcqChapter = nextId;
     $('#multipleContinue').textContent = `${mcqStates[nextId].submitted ? 'ดูผล' : Object.keys(mcqStates[nextId].answers).length ? 'ฝึกต่อ' : 'เริ่ม'}บทที่ ${nextId}`;
-    $('#multipleLanes').innerHTML = CHAPTERS.map((chapter) => {
-      const questions = MCQ_BANKS[chapter.id];
-      const available = Boolean(questions);
-      const chapterState = mcqStates[chapter.id];
-      const ticks = available ? questions.map((q, i) => `<span class="tick${chapterState.answers[i] === undefined ? '' : chapterState.answers[i] === q.answer ? ' is-correct' : ' is-wrong'}"></span>`).join('') : '<span class="lane-pending">กำลังเตรียมข้อสอบ</span>';
-      return `<button class="lane" type="button" ${available ? `data-action="open-mcq" data-mcq-chapter="${chapter.id}"` : 'disabled'} aria-label="บทที่ ${chapter.id} ${escapeAttr(chapter.title)} ${available ? `${questions.length} ข้อ` : 'กำลังเตรียมข้อสอบ'}"><span class="lane-label"><span class="lane-no">${pad2(chapter.id)}</span><span class="lane-name">${escapeHtml(chapter.short)}</span></span><span class="lane-ticks">${ticks}</span></button>`;
-    }).join('');
     $('#multipleChapters').innerHTML = CHAPTERS.map((chapter) => {
       const available = Boolean(MCQ_BANKS[chapter.id]);
-      const mcq = mcqStates[chapter.id];
+      const mcq = mcqStates[chapter.id] || { answers: {}, submitted: false };
       const total = available ? MCQ_BANKS[chapter.id].length : 0;
       const filled = available ? Object.keys(mcq.answers).length : 0;
       const progressLabel = available ? mcq.submitted ? 'ครบแล้ว' : filled ? 'ตอบแล้ว' : 'ยังไม่เริ่ม' : 'ยังไม่เปิด';
@@ -1431,7 +1486,8 @@
 
   updateStaticCounts();
   pickerNode();
-  renderHome();
+  renderHome();
+  renderMultipleHome();
   updateTopStats();
   syncSubmitDock();
   document.title = 'CS:ORG — แล็บเติมคำ โครงสร้างระบบคอมพิวเตอร์';

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="แบบทดสอบเติมคำ 8 บท วิชาโครงสร้างระบบคอมพิวเตอร์ 162 ข้อ ครบทุกวัตถุประสงค์ของใบเนื้อหา พร้อมคำใบและเฉลยอธิบาย ส่งคำตอบครั้งเดียวต่อบท">
+  <meta name="description" content="แบบทดสอบ 8 บท วิชาโครงสร้างระบบคอมพิวเตอร์ 236 วัตถุประสงค์เชิงพฤติกรรม พร้อมคำใบ้และเฉลยอธิบาย">
   <title>CS:ORG — แล็บเติมคำ โครงสร้างระบบคอมพิวเตอร์</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23122026'/%3E%3Cpath d='M8 10h16M8 16h10M8 22h16' stroke='%23F2F4EE' stroke-width='2'/%3E%3Ccircle cx='24' cy='16' r='3' fill='%23FF5A29'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,15 +62,15 @@
           <div class="hero-copy">
             <p class="kicker">020413106 / Computer System Organization</p>
             <h1 class="hero-title" id="multipleTitle">โครงสร้างระบบคอมพิวเตอร์ <span class="title-accent">แล็บ 4 ตัวเลือก 8 บท</span></h1>
-            <p class="lede">หนึ่งข้อต่อหนึ่งวัตถุประสงค์จากใบเนื้อหา เลือกคำตอบแล้วเห็นผลพร้อมเฉลยอธิบายทันทีในข้อนั้น ไม่ต้องรอตอบครบทั้งบท เปิดให้ฝึกครบทั้ง 8 บท รวม 236 วัตถุประสงค์</p>
+            <p class="lede">คลังข้อสอบ 472 ข้อ ครอบคลุมครบทั้ง 236 วัตถุประสงค์เชิงพฤติกรรมจากใบเนื้อหา (อย่างน้อย 2 ข้อต่อวัตถุประสงค์) เลือกคำตอบแล้วเห็นผลพร้อมเฉลยอธิบายทันทีในข้อนั้น เปิดให้ฝึกครบทั้ง 8 บท</p>
             <div class="hero-actions"><button class="btn btn-primary" type="button" data-action="open-mcq" id="multipleContinue">เริ่มบทที่ 1</button><button class="btn btn-quiet" type="button" data-action="help-mcq">ทำแบบทดสอบอย่างไร</button></div>
             <button class="btn-text change-mode" type="button" data-action="select-mode">เปลี่ยนรูปแบบข้อสอบ</button>
-            <ul class="hero-meta" aria-label="ภาพรวมหลักสูตร"><li><strong>8</strong><span>บทเรียน</span></li><li><strong>236</strong><span>ข้อพร้อมให้ฝึก</span></li><li><strong>236</strong><span>เฉลยอธิบาย</span></li></ul>
+            <ul class="hero-meta" aria-label="ภาพรวมหลักสูตร"><li><strong>8</strong><span>บทเรียน</span></li><li><strong id="multipleMetaQuestions">472</strong><span>ข้อพร้อมให้ฝึก</span></li><li><strong id="multipleMetaObjectives">236</strong><span>วัตถุประสงค์</span></li></ul>
           </div>
           <aside class="signal-board" aria-labelledby="multipleBoardTitle">
-            <div class="board-head"><div class="board-title" id="multipleBoardTitle">สถานะการฝึก <span>236 ข้อ · ครบทุกวัตถุประสงค์ทั้ง 8 บท</span></div><div class="board-total"><b id="multipleCorrect">0</b> / <span>236</span></div></div>
+            <div class="board-head"><div class="board-title" id="multipleBoardTitle">สถานะการฝึก <span id="multipleBoardSub">236 วัตถุประสงค์ · คลัง 472 ข้อทั้ง 8 บท</span></div><div class="board-total" title="วัตถุประสงค์ที่ผ่าน / ทั้งหมด"><b id="multipleCorrect">0</b> / <span id="multipleTotal">236</span></div></div>
             <div id="multipleLanes"></div>
-            <div class="board-foot">แต่ละช่องคือหนึ่งข้อ · คลิกที่แถวเพื่อเข้าบท</div>
+            <div class="board-foot">แต่ละช่องคือหนึ่งวัตถุประสงค์ (คลัง 472 ข้อ) · คลิกที่แถวเพื่อเข้าบท</div>
           </aside>
         </div>
         <section class="index-section" aria-labelledby="multipleIndexTitle">
@@ -109,8 +109,8 @@
             <button class="btn-text change-mode" type="button" data-action="select-mode">เปลี่ยนรูปแบบข้อสอบ</button>
             <ul class="hero-meta" aria-label="ภาพรวมหลักสูตร">
               <li><strong>8</strong><span>บทเรียน</span></li>
-              <li><strong id="heroQuestions">162</strong><span>ข้อเติมคำ</span></li>
-              <li><strong id="heroHints">162</strong><span>คำใบจากบทเรียน</span></li>
+              <li><strong id="heroQuestions">236</strong><span>ข้อเติมคำ</span></li>
+              <li><strong id="heroHints">236</strong><span>คำใบจากบทเรียน</span></li>
             </ul>
           </div>
 
@@ -120,7 +120,7 @@
                 สถานะการฝึก
                 <span id="boardSub">ครบทุกวัตถุประสงค์ของแต่ละบท</span>
               </div>
-              <div class="board-total"><b id="boardCorrect">0</b> / <span id="boardTotal">162</span></div>
+              <div class="board-total"><b id="boardCorrect">0</b> / <span id="boardTotal">236</span></div>
             </div>
             <div id="boardLanes"></div>
             <div class="board-foot" id="boardFoot">แต่ละช่องคือหนึ่งข้อ · คลิกที่แถวเพื่อเข้าบท</div>
@@ -250,8 +250,8 @@
   <footer class="page-footer">
     <div class="shell page-footer-inner">
       <span>CS:ORG — เอกสารประกอบการสอน 020413106</span>
-      <span class="fill-footer">แบบฝึกหัดเติมคำ 8 บท · <span id="footerTotal">162</span> ข้อ</span>
-      <span class="multiple-footer">แบบทดสอบ 4 ตัวเลือกครบ 8 บท · รวม 236 ข้อ</span>
+      <span class="fill-footer">แบบฝึกหัดเติมคำ 8 บท · <span id="footerTotal">236</span> ข้อ</span>
+      <span class="multiple-footer">แบบทดสอบ 4 ตัวเลือกครบ 8 บท · รวม <span id="multipleFooterTotal">472</span> ข้อ (<span id="multipleFooterObjectives">236</span> วัตถุประสงค์)</span>
     </div>
   </footer>
 
